@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load mathfilters %}
+{% block title %}Category{% endblock title%}
+{% block body %}
+
+ 
+    <!-- Breadcrumb Begin -->
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="{% url 'home'%}"><i class="fa fa-home"></i> Home</a>
+                        <a href="{% url 'shop' catslug.slug %}" class="text-capitalize">{{catslug.slug}}</a>
+                        <a href="{% url 'shops' catslug.slug scatslug.slug %}" class="text-capitalize">{{scatslug.slug}}</a>
+                        <span class="text-capitalize">{{ccslug.slug}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+    <!-- Shop Section Begin -->
+    <section class="shop spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="row">
+                    {% for prorow in product %}
+                    {% if prorow.subcategory_id == scatslug.id and prorow.childcategory_id == ccslug.id %}
+                   
+                    
+                        <div class="col-lg-3 col-md-6">
+                            <div class="product__item">
+                                {% for imgrow in prorow.imgproduct.all %} 
+                                {% if imgrow.imageactive == 1 %}
+                                <div class="product__item__pic set-bg" data-setbg="/media/{{imgrow.image}}">
+                                    {% if prorow.productstatus_id == 1 %}
+                                    <div class="label new">New </div>
+                                 {% elif prorow.productstatus_id == 2 %}   
+                                    <div class="label sale">Sale</div>
+                                  {% endif %}  
+                                    {% if prorow.quantitystock == 0 %} 
+                                   <div class="label stockout">out of stock</div>
+                                   {% endif %}
+                                    <ul class="product__hover">
+                                        <li><a href="/media/{{imgrow.image}}" class="image-popup"><span class="arrow_expand"></span></a></li>
+                                        <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+                                        <li><a href="{% url 'cart' prorow.id %}"><span class="icon_bag_alt"></span></a></li>
+                                    </ul>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                                <div class="product__item__text">
+                                    <h6><a href="{% url 'details' prorow.pslag %}">{{ prorow.productname|truncatechars:50 }}</a></h6>
+                                    <div class="rating">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                    </div>
+                                    {% if prorow.sellprice > prorow.discountprice %}
+                                    <div class="product__price_sell">
+                                        <span class="bg-danger">
+                                            {{ prorow.discountprice|mul:100|div:prorow.sellprice|floatformat:2 }}%
+                                        </span> 
+                                        &nbsp;&nbsp;<s>{{prorow.sellprice}}</s></div>
+                                     {% endif %}   
+                                    <div class="product__price">{{prorow.discountprice}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                        
+                        <div class="col-lg-12 text-center">
+                            <div class="pagination__option">
+                                <a href="#">1</a>
+                                <a href="#">2</a>
+                                <a href="#">3</a>
+                                <a href="#"><i class="fa fa-angle-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Shop Section End -->
+
+{% endblock body %}
